@@ -108,6 +108,7 @@
   const modellist = [
     { name: 'DeepSeek-V3', value: 'deepseek-ai/DeepSeek-V3' },
     { name: 'DeepSeek-R1', value: 'deepseek-ai/DeepSeek-R1' },
+    { name: 'ChatGLM', value: 'THUDM/GLM-Z1-32B-0414' },
     { name: 'Qwen', value: 'Qwen/Qwen3-30B-A3B' },
   ]
   const selectedLLMs = ref([])
@@ -116,6 +117,7 @@
   const LLMlist = ref([
     'DeepSeek-V3',
     'DeepSeek-R1',
+    'ChatGLM',
     'Qwen',
   ])
   const options = {
@@ -131,7 +133,7 @@
       ],
       stream: false,
       max_tokens: 512,
-      enable_thinking: false,
+      // enable_thinking: false,
       // thinking_budget: 4096,
       min_p: 0.05,
       stop: null,
@@ -149,8 +151,9 @@
     console.log(questionIdx.value)
   }
   const test = async () => {
+    questionIdx.value = "";
     results.value = {};
-    const randomNumbers: number[] = Array.from({ length: 200 }, () => Math.floor(Math.random() * 1000));
+    const randomNumbers: number[] = Array.from({ length: 10 }, () => Math.floor(Math.random() * 1000));
     const half = Math.floor(randomNumbers.length / 2);
     const negnum: number[] = randomNumbers.slice(0, half);
     const posnum: number[] = randomNumbers.slice(half);
@@ -199,7 +202,7 @@
                 results.value[llm][num] = {
                   reply: response.choices[0].message.content,
                   solution: p === "neg" ? "负面" : "正面",
-                  match: response.choices[0].message.content === (p === "neg" ? "负面" : "正面") ? 1 : 0,
+                    match: response.choices[0].message.content.includes(p === "neg" ? "负面" : "正面") ? 1 : 0,
                   time: consume
                 };
               }
